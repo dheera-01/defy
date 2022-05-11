@@ -4,6 +4,17 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { DrawerScreenStack } from "./DrawerStack";
 import { StatusBar } from "expo-status-bar";
 import { CreateAccountScreen, LoginScreen } from "./AuthStack";
+import {
+  Button,
+  Modal,
+  SafeAreaView,
+  TouchableOpacity,
+  FlatList,
+  Platform,
+  TextInput,
+} from "react-native";
+
+import userS from "./userStackRideStatus";
 
 function DetailScreen() {
   return (
@@ -16,6 +27,7 @@ function DetailScreen() {
 
 const HomeStack = createNativeStackNavigator();
 export function HomeScreenStack() {
+
   return (
     <HomeStack.Navigator>
       <HomeStack.Screen
@@ -24,10 +36,10 @@ export function HomeScreenStack() {
         options={{ headerShown: false }}
       />
       <HomeStack.Screen name="Detail" component={DetailScreen} />
+      <HomeStack.Screen name = "userScreenRideStatus" component={userS}/>
     </HomeStack.Navigator>
   );
 }
-
 
 
 const styles = StyleSheet.create({

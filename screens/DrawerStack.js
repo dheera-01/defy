@@ -173,6 +173,10 @@ function HomeScreen({ navigation }) {
     setShow(true);
     setMode(currentMode);
   }
+
+  function navigateToRideStatusScreen() {
+        navigation.navigate("userScreenRideStatus");
+  }
   
   return (
     <View style={styles.container}>
@@ -183,6 +187,10 @@ function HomeScreen({ navigation }) {
       <TouchableOpacity style={styles.button}>
           <Text style={styles.buttonText}>Pickup Location</Text>
         </TouchableOpacity>
+
+        <TouchableOpacity style={styles.confirmBtn} onPress={() => navigateToRideStatusScreen()}>
+          <Text style={styles.buttonText}>navigatie Ride</Text>
+      </TouchableOpacity>
 
       <TextInput
         style={styles.input}

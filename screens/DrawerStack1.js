@@ -1,6 +1,3 @@
-//this is driver DrawerStack
-//import { StatusBar } from 'expo-status-bar';
-// import React from "react";
 import React, { useState, useEffect} from 'react';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import {
@@ -23,46 +20,7 @@ import {
 import { StatusBar } from "expo-status-bar";
 import { supabase } from "../supabase-service";
 
-// function MyModal({ isVisible, onClick }) {
-//   return (
-//     <Modal
-//       visible={isVisible}
-//       animationType="slide"
-//       presentationStyle="overFullScreen"
-//       transparent={false}
-//     >
-//       <SafeAreaView style={styles["modal-container"]}>
-//         <Text style={{ paddingTop: 20, fontSize: 22 }}>IN MODAL</Text>
-//         <Button onPress={onClick} title="CLOSE"></Button>
-//       </SafeAreaView>
-//     </Modal>
-//   );
-// }
-
 function HomeScreen({ navigation }) {
-  // const [showModal, setShowModal] = React.useState(false);
-
-  // React.useLayoutEffect(() => {
-  //   navigation.setOptions({
-  //     headerRight: () => (
-  //       <Button title="ADD" onPress={() => setShowModal(true)}></Button>
-  //     ),
-  //   });
-  // }, [navigation]);
-
-  // return (
-  //   <View style={styles.container}>
-  //     {/* MODAL */}
-  //     <MyModal isVisible={showModal} onClick={() => setShowModal(false)} />
-  //     {/* PAGE CONTENT */}
-  //     <Text>Open up App.tsx to start working on your app!</Text>
-  //     <StatusBar style="auto" />
-  //     <Button
-  //       title="next page"
-  //       onPress={() => navigation.navigate("Detail")}
-  //     ></Button>
-  //   </View>
-  // );
 
   const[datas, setData] = useState([]);
 
@@ -77,6 +35,19 @@ function HomeScreen({ navigation }) {
         });
         console.log(datas);
     },[]);
+
+    function navigateToDriverStatusScreen(itemid) {
+      updateDriverIDStatus(itemid);
+      navigation.navigate("driverAcceptRideStatus",{itemid : itemid,});
+    }
+
+    async function updateDriverIDStatus(itemid) {
+      console.log("hello");
+      const { data, error } = await supabase
+      .from('rides_broadcasted')
+      .update({ driverID: supabase.auth.user().id })
+      .eq('id', itemid)
+    }
   
   return (
     <View style={styles.container}>
@@ -90,7 +61,7 @@ function HomeScreen({ navigation }) {
         renderItem={({ item }) => 
         
         (<View style={{flexDirection: 'row', alignItems: 'center'}}>
-          <TouchableOpacity style={styles.confirmBtn}>
+          <TouchableOpacity style={styles.confirmBtn} onPress={() => navigateToDriverStatusScreen(item.id)}>
           <Text style={styles.buttonText}>ACCEPT</Text>
           </TouchableOpacity>
           <Text style={styles.item}>{item.created_at}</Text>
