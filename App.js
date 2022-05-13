@@ -40,14 +40,6 @@ export default function App() {
     console.log(data[0].isDriver);
     setDriverState(data[0].isDriver);
   }
-  // async function fetchisDriver() {
-    
-  //   const {data} = await supabase
-  //   .from('profiles')
-  //   .select('id,isDriver')
-  //   .eq('id', supabase.auth.user().id);
-  //   console.log(data);
-  // }
 
   return (
     <NavigationContainer>
