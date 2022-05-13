@@ -27,13 +27,7 @@ export default function App() {
       console.log("hello");
       fetchMsg();
     }
-
-    // const {data} = supabase
-    // .from('profiles')
-    // .select('id,isDriver')
-    // .eq('id', supabase.auth.user().id);
-
-    
+ 
   });
 
   async function fetchMsg() {
