@@ -37,6 +37,7 @@ function HomeScreen({ navigation }) {
     },[]);
 
     function navigateToDriverStatusScreen(itemid) {
+      global.rideid = itemid;
       updateDriverIDStatus(itemid);
       navigation.navigate("driverAcceptRideStatus",{itemid : itemid,});
     }
@@ -210,3 +211,5 @@ const styles = StyleSheet.create({
   }
 }
 );
+
+// export default ride_id;

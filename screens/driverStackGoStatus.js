@@ -1,6 +1,7 @@
 import React from 'react';
 import { Text, View, Button,TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { supabase } from '../supabase-service';
 
 // function navigateToDriverStatusOngoingScreen() {
 //     navigation.navigate("driverGoRideStatus");
@@ -9,13 +10,25 @@ import { useNavigation } from '@react-navigation/native';
 export default function driverGoS() {
     const navigation = useNavigation();
 
-    // function navigateBack() {
-    //     navigation.navigate('DrawerStack1');
-    // }
+    function navigateToHomeScreen() {
+      updateRideIDStatus(rideid);
+      navigation.popToTop()
+  }
+
+  //update the ride_status to ongoing
+  async function updateRideIDStatus(itemid) {
+    console.log(itemid);
+    console.log("hello_ride_completed");
+    const { data, error } = await supabase
+    .from('rides_broadcasted')
+    .update({ rideStatus: "COMPLETED" })
+    .eq('id', itemid)
+  }
+
     return (
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
     <Text>Ride ongoing</Text>
-    <TouchableOpacity style = {styles.confirmBtn} onPress={() => navigation.popToTop()}>
+    <TouchableOpacity style = {styles.confirmBtn} onPress={() => navigateToHomeScreen()}>
     <Text style = {styles.buttonText}>Stop</Text>
     </TouchableOpacity>
     </View>
