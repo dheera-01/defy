@@ -1,51 +1,78 @@
-import React,{useState,useEffect} from "react";
-import { NavigationContainer } from "@react-navigation/native";
-import { HomeScreenStack } from "./screens/HomeStack";
-import { HomeScreenStack1 } from "./screens/HomeStack1";
-import {AuthScreenStack} from "./screens/AuthStack";
-import { Text } from "react-native";
 
+import 'react-native-gesture-handler';
 
-import { supabase } from "./supabase-service";
-import 'react-native-url-polyfill/auto';
+ import React, {useEffect,useState} from 'react';
+ import {StatusBar, PermissionsAndroid, Platform} from 'react-native';
+ import Geolocation from '@react-native-community/geolocation';
+ import { NavigationContainer } from '@react-navigation/native';
 
-export default function App() {
+ import Router from './src/Navigation/Root';
+
+ navigator.geolocation = require('@react-native-community/geolocation');
+
+ import { supabase } from "./supabase-service";
+
+import HomeScreen from './src/screens/HomeScreen';
+import DestinationSearch from './src/screens/DestinationSearch';
+import SearhResults from './src/screens/SearchResults';
+
+const App = () => {
 
   const[auth,setAuth] = useState(false);
-  const[isDriver,setDriverState] = useState(false);
   const[loading,setLoading] = useState(true);
+
+  const androidPermission = async () => {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+        {
+          title: "Pravaig App Location Permission",
+          message:
+            "Pravaig App needs access to your location " +
+            "so you can take awesome rides.",
+          buttonNeutral: "Ask Me Later",
+          buttonNegative: "Cancel",
+          buttonPositive: "OK"
+        }
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        console.log("You can use the location");
+      } else {
+        console.log("Location permission denied");
+      }
+    } catch (err) {
+      console.warn(err);
+    }
+  }
+
+  useEffect(() => {
+    if (Platform.OS === 'android') {
+      androidPermission();
+    } else {
+      // IOS
+      Geolocation.requestAuthorization();
+    }
+  }, [])
 
   useEffect(()=>{
     setAuth(supabase.auth.session());
-
     supabase.auth.onAuthStateChange((_event,session)=>{
       console.log(session)
       setAuth(session);
     });
-    
-    if(auth){
-      console.log("hello");
-      fetchMsg();
-    }
- 
   });
 
-  async function fetchMsg() {
-
-    const id = supabase.auth.user().id;
-    const {data} = await supabase
-    .from('profiles')
-    .select('*')
-    .eq('id',id);
-    console.log(data[0].isDriver);
-    setDriverState(data[0].isDriver);
-  }
-
   return (
-    <NavigationContainer>
-      {auth?[isDriver?<HomeScreenStack1/>:<HomeScreenStack/>]:<AuthScreenStack/>}
-    </NavigationContainer>
+    <>
+      <StatusBar barStyle='dark-content'/>
+      {/* <HomeScreen /> */}
+      {/* <DestinationSearch /> */}
+      {/* <SearhResults/> */}
+      <Router auth={auth}/> 
+    </>
   );
-}
+};
 
-<HomeScreenStack/>
+
+
+export default App;
