@@ -131,7 +131,7 @@ function HomeScreen({ navigation }) {
     insertRideBroad(lat_p,log_p,lat_d,log_d,'2022-03-16T13:56:00.000Z',supabase.auth.user().id);
   }
 
-  async function insertRideBroadNow(lat_p,log_p,lat_d,log_d,dt,userID) {  
+  async function insertRideBroadNow(lat_p,log_p,lat_d,log_d,dt,userID,ridePin) {  
     console.log("insertRideBroad called!!");
     const {} = await supabase
     .from('rides_broadcasted')
@@ -141,7 +141,8 @@ function HomeScreen({ navigation }) {
       ,lat_d:lat_d
       ,log_d:log_d
       ,time:dt
-    ,userID:userID},
+    ,userID:userID
+  ,ridePin:ridePin},
   ]);
   }
 
@@ -151,7 +152,16 @@ function HomeScreen({ navigation }) {
     date.setSeconds(0,0);
     console.log(date);
     //2022-03-16 10:47:02.499488+00
-    insertRideBroadNow(lat_p,log_p,lat_d,log_d,'2022-03-16T13:56:00.000Z',supabase.auth.user().id);
+    global.ridePin =  Math.floor(100000 + (Math.random() * (999999-100000)));
+    console.log(ridePin);
+    if(lat_p != null && log_p != null && lat_d != null && log_d != null && ridePin >= 100000 && ridePin <= 999999){
+      insertRideBroadNow(lat_p,log_p,lat_d,log_d,'2022-03-16T13:56:00.000Z',supabase.auth.user().id,ridePin);
+      navigation.navigate("userScreenRideStatus");
+    }else{
+      window.alert("Error!");
+    }
+    
+    // ridesBroadcastedSyncUpdate(); //function directs to new screen
     //insertMsg();
   }
 
@@ -174,9 +184,30 @@ function HomeScreen({ navigation }) {
     setMode(currentMode);
   }
 
-  function navigateToRideStatusScreen() {
-        navigation.navigate("userScreenRideStatus");
-  }
+  /*
+
+const ridesBroadcasted = supabase
+  .from('rides_broadcasted')
+  .on('UPDATE', payload => {
+    console.log('Change received!', payload)
+  })
+  .subscribe()
+  }*/
+
+  //subscribe function
+  // function ridesBroadcastedSyncUpdate(){
+  //   console.log("sync function called!");
+  //   const {} = supabase
+  // .from('rides_broadcasted')
+  // .on('UPDATE', payload => {
+  //   console.log('Change received!', payload);
+  //   navigation.navigate("userScreenRideStatus");
+  // })
+  // .subscribe();}
+
+  // function navigateToRideStatusScreen() {
+  //   navigation.navigate("userScreenRideStatus");
+  // }
   
   return (
     <View style={styles.container}>
@@ -189,7 +220,7 @@ function HomeScreen({ navigation }) {
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.confirmBtn} onPress={() => navigateToRideStatusScreen()}>
-          <Text style={styles.buttonText}>navigatie Ride</Text>
+          <Text style={styles.buttonText}>navigate Ride</Text>
       </TouchableOpacity>
 
       <TextInput

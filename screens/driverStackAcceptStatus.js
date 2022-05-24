@@ -1,16 +1,46 @@
 import React from 'react';
-import { Text, View, Button,TouchableOpacity,StyleSheet } from 'react-native';
+import { useState,useEffect } from 'react';
+import { Text, View, Button,TouchableOpacity,StyleSheet,TextInput } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { useEffect } from 'react/cjs/react.production.min';
+// import { useEffect } from 'react/cjs/react.production.min';
 import { supabase } from '../supabase-service';
 
 export default function driverS() {
+    const [ridePin, onChangeRidePin] = React.useState(null);
+    const[fetchedPin, setFetchedPin] = useState();
+
+    useEffect(() => {
+      supabase
+      .from('rides_broadcasted')
+      .select('ridePin')
+      .eq('id',rideid)
+      .then(({data}) => {setFetchedPin(data)});
+  });
+
     const navigation = useNavigation();
 
     function navigateToDriverStatusOngoingScreen() {
-        updateRideIDStatus(rideid);
-        navigation.navigate("driverGoRideStatus");
+        // fetchRidePin(rideid);
+        // console.log("comparing ride pin");
+        // console.log(ridePin);
+        // console.log(fetchedPin[0].ridePin);
+        if(fetchedPin[0].ridePin == ridePin){
+          updateRideIDStatus(rideid);
+          navigation.navigate("driverGoRideStatus");
+        }else{
+          console.log("Ride Pin is wrong!");
+          window.alert("Ride Pin is wrong!");
+        }     
     }
+
+    //fetch the pin from server
+    // async function fetchRidePin(itemid){
+    //     supabase
+    //   .from('rides_broadcasted')
+    //   .select('ridePin')
+    //   .eq('id',itemid)
+    //   .then(({data}) => {setFetchedPin(data)});
+    // }
 
     //update the ride_status to ongoing
     async function updateRideIDStatus(itemid) {
@@ -26,6 +56,13 @@ export default function driverS() {
             
     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
     {/* <Text>{itemid}</Text> */}
+    <TextInput
+        onChangeText={onChangeRidePin}
+        value={ridePin}
+        placeholder="Enter the RIDE PIN"
+        keyboardType="numeric"
+    />
+
     <TouchableOpacity style={styles.confirmBtn} onPress={() => navigateToDriverStatusOngoingScreen()}>
     <Text style = {styles.buttonText}>Go</Text>
     </TouchableOpacity>
